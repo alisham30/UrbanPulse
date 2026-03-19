@@ -1,0 +1,71 @@
+spring:
+  application:
+    name: ingestion-service
+  profiles:
+    active: dev
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: all
+    topic:
+      raw-city-data: raw-city-data
+
+server:
+  port: 8082
+  servlet:
+    context-path: /
+
+logging:
+  level:
+    root: INFO
+    com.urbanpulse: DEBUG
+
+urbanpulse:
+  ingestion:
+    # OpenWeather API Configuration
+    openweather:
+      api-key: ${OPENWEATHER_API_KEY:your-api-key-here}
+      base-url: https://api.openweathermap.org
+    
+    # OpenAQ API Configuration (secondary validation source)
+    openaq:
+      api-key: ${OPENAQ_API_KEY:}
+      base-url: https://api.openaq.org/v3
+
+    # Cities to ingest - add/remove cities here to expand coverage
+    cities:
+      - name: Mumbai
+        latitude: 19.0760
+        longitude: 72.8777
+      - name: Delhi
+        latitude: 28.6139
+        longitude: 77.2090
+      - name: Pune
+        latitude: 18.5204
+        longitude: 73.8567
+      - name: Bengaluru
+        latitude: 12.9716
+        longitude: 77.5946
+      - name: Chennai
+        latitude: 13.0827
+        longitude: 80.2707
+      - name: Hyderabad
+        latitude: 17.3850
+        longitude: 78.4867
+      - name: Kolkata
+        latitude: 22.5726
+        longitude: 88.3639
+      - name: Ahmedabad
+        latitude: 23.0225
+        longitude: 72.5714
+
+    # Scheduling
+    schedule:
+      # Fetch every 30 seconds (in cron format: every 30 seconds)
+      cron: "0/30 * * * * ?"
+      # Or use fixed rate in milliseconds (30000 = 30 seconds)
+      interval-ms: 30000
+      # Use interval-based scheduling (true) or cron-based (false)
+      use-interval: true

@@ -1,0 +1,66 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --font-heading: "Rajdhani", "Orbitron", "Segoe UI", sans-serif;
+  --font-body: "Space Grotesk", "Segoe UI", "Helvetica Neue", sans-serif;
+
+  --bg-primary: #070d17;
+  --bg-secondary: #0c1523;
+  --bg-tertiary: #101d31;
+  --border-color: #2f4561;
+
+  --text-primary: #e4f0fa;
+  --text-secondary: #99adbf;
+
+  --accent-green: #3ddc97;
+  --accent-blue: #30c4ff;
+  --accent-yellow: #f5bd3f;
+  --accent-red: #ff5c7a;
+  --accent-orange: #ff8a4c;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+}
+
+p {
+  line-height: 1.5;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+}

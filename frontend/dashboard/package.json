@@ -1,0 +1,25 @@
+{
+  "name": "urbanpulse-dashboard",
+  "version": "1.0.0",
+  "description": "Real-time city environment intelligence dashboard",
+  "private": true,
+  "homepage": "/",
+  "dependencies": {
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "recharts": "^2.12.0",
+    "sockjs-client": "^1.6.1",
+    "stompjs": "^2.3.3",
+    "axios": "^1.6.5",
+    "prop-types": "^15.8.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.2.0",
+    "vite": "^5.0.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  }
+}
