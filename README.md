@@ -424,21 +424,7 @@ Or skip Spark entirely and use the lightweight `stream_processor.py` which uses 
 
 ---
 
-## 🗺️ Roadmap
 
-- [x] ~~Database persistence~~ — MySQL 8.0 with JPA/Hibernate
-- [x] ~~Historical trend comparison view~~ — time-range filtering (1h/6h/24h/7d)
-- [x] ~~Interactive map view~~ — Leaflet with risk markers and geolocation
-- [x] ~~Multi-city comparison~~ — bar charts, radar charts, ranking tables
-- [x] ~~Cross-city intelligence~~ — correlation detection, regional event alerts
-- [x] ~~Toast notifications~~ — browser alerts for high-risk events
-- [ ] Predictive AQI forecasting with ML
-- [ ] Email / SMS alert notifications
-- [ ] Grafana + Prometheus monitoring
-- [ ] Mobile app (React Native)
-- [ ] Global city support
-
----
 
 <div align="center">
 
