@@ -32,6 +32,21 @@ public class KafkaConfig {
     @Value("${spring.kafka.topic.raw-city-data}")
     private String rawCityDataTopic;
 
+    @Value("${spring.kafka.topic.weather-raw-events}")
+    private String weatherRawEventsTopic;
+
+    @Value("${spring.kafka.topic.pollution-raw-events}")
+    private String pollutionRawEventsTopic;
+
+    @Value("${spring.kafka.topic.openaq-validation-events}")
+    private String openaqValidationEventsTopic;
+
+    @Value("${spring.kafka.topic.city-intelligence-events}")
+    private String cityIntelligenceEventsTopic;
+
+    @Value("${spring.kafka.topic.city-alert-events}")
+    private String cityAlertEventsTopic;
+
     /**
      * Kafka Admin configuration for creating topics.
      */
@@ -42,13 +57,12 @@ public class KafkaConfig {
         return new KafkaAdmin(configs);
     }
 
-    /**
-     * Auto-create raw-city-data topic.
-     */
-    @Bean
-    public NewTopic rawCityDataNewTopic() {
-        return new NewTopic(rawCityDataTopic, 3, (short) 1);
-    }
+    @Bean public NewTopic rawCityDataNewTopic() { return new NewTopic(rawCityDataTopic, 3, (short) 1); }
+    @Bean public NewTopic weatherRawEventsNewTopic() { return new NewTopic(weatherRawEventsTopic, 3, (short) 1); }
+    @Bean public NewTopic pollutionRawEventsNewTopic() { return new NewTopic(pollutionRawEventsTopic, 3, (short) 1); }
+    @Bean public NewTopic openaqValidationEventsNewTopic() { return new NewTopic(openaqValidationEventsTopic, 3, (short) 1); }
+    @Bean public NewTopic cityIntelligenceEventsNewTopic() { return new NewTopic(cityIntelligenceEventsTopic, 3, (short) 1); }
+    @Bean public NewTopic cityAlertEventsNewTopic() { return new NewTopic(cityAlertEventsTopic, 3, (short) 1); }
 
     /**
      * Kafka Producer Factory configuration.

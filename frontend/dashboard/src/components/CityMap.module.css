@@ -1,0 +1,184 @@
+.mapWrapper {
+  position: relative;
+  height: calc(100vh - 65px);
+  width: 100%;
+}
+
+.mapContainer {
+  height: 100%;
+  width: 100%;
+  background: #060b17;
+  z-index: 1;
+}
+
+/* ── Legend ── */
+.mapLegend {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 100;
+  background: rgba(10, 18, 32, 0.92);
+  border: 1px solid rgba(52, 78, 113, 0.6);
+  border-radius: 10px;
+  padding: 0.7rem 0.9rem;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.legendTitle {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #8ca6be;
+  margin: 0 0 0.5rem;
+  font-weight: 700;
+}
+
+.legendItems {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+  color: #a8bdce;
+}
+
+.legendDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── Popup Styles ── */
+.markerPopup .leaflet-popup-content-wrapper {
+  background: rgba(10, 18, 32, 0.97) !important;
+  border: 1px solid rgba(52, 78, 113, 0.7) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5) !important;
+  color: #d0e4f3 !important;
+}
+
+.markerPopup .leaflet-popup-tip {
+  background: rgba(10, 18, 32, 0.97) !important;
+  border: 1px solid rgba(52, 78, 113, 0.7) !important;
+}
+
+.popupContent {
+  min-width: 200px;
+  padding: 0.3rem;
+}
+
+.popupHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+}
+
+.popupCity {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #e5f5ff;
+  margin: 0;
+}
+
+.popupRisk {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  border: 1px solid;
+}
+
+.popupStats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.popupStat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+}
+
+.popupStatLabel {
+  font-size: 0.58rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #6a8099;
+  font-weight: 600;
+}
+
+.popupStatValue {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #d7e7f7;
+}
+
+.popupMeta {
+  display: flex;
+  gap: 0.7rem;
+  font-size: 0.7rem;
+  color: #8ca6be;
+  margin-bottom: 0.4rem;
+}
+
+.popupAlert {
+  font-size: 0.75rem;
+  color: #d5e7f5;
+  line-height: 1.4;
+  margin: 0.3rem 0;
+  padding: 0.35rem 0.5rem;
+  border-left: 2px solid #39beff;
+  background: rgba(57, 190, 255, 0.06);
+  border-radius: 0 6px 6px 0;
+}
+
+.popupButton {
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.45rem;
+  border: 1px solid rgba(48, 196, 255, 0.4);
+  border-radius: 8px;
+  background: rgba(48, 196, 255, 0.1);
+  color: #53d5ff;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.popupButton:hover {
+  background: rgba(48, 196, 255, 0.2);
+  border-color: rgba(48, 196, 255, 0.6);
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .mapLegend {
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.5rem 0.6rem;
+  }
+
+  .legendTitle {
+    font-size: 0.6rem;
+  }
+
+  .legendItem {
+    font-size: 0.62rem;
+  }
+}

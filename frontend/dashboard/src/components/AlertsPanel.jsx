@@ -42,6 +42,7 @@ const AlertsPanel = ({ alerts, maxVisible = 12 }) => {
           const borderLeft = RISK_BORDER[alert.riskLevel] || RISK_BORDER.ELEVATED;
           const cityName = String(alert.city || 'Unknown');
           const alertType = String(alert.alertType || 'UPDATE');
+          const alertState = String(alert.alertState || '');
 
           return (
             <div
@@ -54,6 +55,13 @@ const AlertsPanel = ({ alerts, maxVisible = 12 }) => {
                 <span className={styles.alertCity}>{cityName}</span>
                 {alertType !== 'UPDATE' && (
                   <span className={styles.alertType}>{alertType}</span>
+                )}
+                {alertState && (
+                  <span className={`${styles.alertStateBadge} ${
+                    alertState === 'ESCALATED' ? styles.stateEscalated
+                    : alertState === 'RESOLVED' ? styles.stateResolved
+                    : styles.stateNew
+                  }`}>{alertState}</span>
                 )}
                 <span className={styles.alertTime}>{formatTime(alert.timestamp)}</span>
               </div>

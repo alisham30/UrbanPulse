@@ -1,158 +1,12 @@
 .dashboard {
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background:
-    radial-gradient(1200px 500px at 5% -10%, rgba(48, 196, 255, 0.18), transparent 60%),
-    radial-gradient(900px 400px at 95% 0%, rgba(61, 220, 151, 0.12), transparent 55%),
-    linear-gradient(180deg, #060b17 0%, #080f1c 48%, #070d17 100%);
+  background: transparent;
 }
 
-.header {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  border-bottom: 1px solid rgba(52, 78, 113, 0.7);
-  backdrop-filter: blur(10px);
-  background: rgba(8, 14, 26, 0.75);
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.25);
-}
+/* Header styles removed — now in Header.module.css */
 
-.headerContent {
-  max-width: 1480px;
-  margin: 0 auto;
-  padding: 1.1rem 1.8rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.2rem;
-}
-
-.brandSection {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.logoMark {
-  width: 46px;
-  height: 46px;
-  border-radius: 14px;
-  position: relative;
-  border: 1px solid rgba(53, 150, 214, 0.55);
-  background: linear-gradient(145deg, rgba(14, 28, 49, 0.95), rgba(8, 18, 31, 0.95));
-  box-shadow: inset 0 0 20px rgba(48, 196, 255, 0.15), 0 0 28px rgba(48, 196, 255, 0.11);
-}
-
-.logoPulse {
-  position: absolute;
-  inset: 8px;
-  border-radius: 10px;
-  border: 1px solid rgba(61, 220, 151, 0.55);
-  animation: logoPulse 2.2s ease-in-out infinite;
-}
-
-.logoIcon {
-  position: absolute;
-  inset: 16px;
-  border-radius: 7px;
-  background: linear-gradient(130deg, #2fd3ff, #3ddc97);
-  box-shadow: 0 0 14px rgba(48, 196, 255, 0.5);
-}
-
-@keyframes logoPulse {
-  0%, 100% { transform: scale(1); opacity: 0.95; }
-  50% { transform: scale(0.88); opacity: 0.45; }
-}
-
-.titleSection {
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
-}
-
-.title {
-  font-size: 1.85rem;
-  letter-spacing: 0.4px;
-  color: #e5f5ff;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.subtitle {
-  font-size: 0.74rem;
-  letter-spacing: 1.6px;
-  text-transform: uppercase;
-  color: #8ca6be;
-}
-
-.headerRight {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.dataSourceBadges {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 0.5rem;
-}
-
-.sourceBadge {
-  padding: 0.28rem 0.7rem;
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 0.8px;
-  text-transform: uppercase;
-  color: #7fd5f8;
-  border-radius: 999px;
-  border: 1px solid rgba(71, 143, 186, 0.45);
-  background: rgba(18, 34, 54, 0.7);
-}
-
-.liveIndicator {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.42rem 0.82rem;
-  border-radius: 999px;
-  border: 1px solid rgba(74, 143, 109, 0.6);
-  background: rgba(9, 24, 20, 0.65);
-}
-
-.liveDot,
-.offlineDot {
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-}
-
-.liveDot {
-  background: #3ddc97;
-  box-shadow: 0 0 10px rgba(61, 220, 151, 0.9);
-  animation: livePulse 1.2s infinite;
-}
-
-@keyframes livePulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
-}
-
-.offlineDot {
-  background: #95a4b2;
-}
-
-.liveText,
-.offlineText {
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 1px;
-}
-
-.liveText { color: #86e9b8; }
-.offlineText { color: #95a4b2; }
+/* Live/offline indicators removed — now in Header.module.css */
 
 .errorBanner {
   width: 100%;
@@ -830,6 +684,117 @@
   background: rgba(8, 14, 26, 0.86);
 }
 
+/* ── Intelligence Panels ── */
+.intelligencePanels {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.intelCard {
+  background: rgba(12, 20, 36, 0.9);
+  border: 1px solid rgba(52, 77, 106, 0.7);
+  border-radius: 10px;
+  padding: 1rem 1.2rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  transition: border-color 0.2s;
+}
+
+.intelCard:hover {
+  border-color: rgba(0, 212, 255, 0.45);
+}
+
+.intelCardTitle {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #7eb8d4;
+  margin: 0 0 0.3rem;
+}
+
+.intelCityName {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #e8f4fb;
+  margin: 0;
+}
+
+.intelSubtext {
+  font-size: 0.78rem;
+  color: #8fa7bc;
+  margin: 0;
+}
+
+.intelSubtext strong {
+  color: #c8e0ef;
+}
+
+.intelEmpty {
+  font-size: 0.82rem;
+  color: #566e82;
+  font-style: italic;
+  margin: 0;
+}
+
+.intelRecommendation {
+  font-size: 0.84rem;
+  color: #d4edf8;
+  line-height: 1.5;
+  margin: 0 0 0.25rem;
+}
+
+.intelConfidenceValue {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #00d4ff;
+  margin: 0 0 0.2rem;
+}
+
+@media (max-width: 1100px) {
+  .intelligencePanels {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .intelligencePanels {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Alert State Badges ── */
+.alertStateBadge {
+  display: inline-block;
+  padding: 0.15em 0.5em;
+  border-radius: 4px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.stateNew {
+  background: rgba(0, 160, 255, 0.2);
+  color: #60c8ff;
+  border: 1px solid rgba(0, 160, 255, 0.4);
+}
+
+.stateEscalated {
+  background: rgba(255, 80, 50, 0.2);
+  color: #ff7a5a;
+  border: 1px solid rgba(255, 80, 50, 0.4);
+}
+
+.stateResolved {
+  background: rgba(0, 220, 120, 0.18);
+  color: #3fffa0;
+  border: 1px solid rgba(0, 220, 120, 0.4);
+}
+
 @media (max-width: 1320px) {
   .metricsGrid {
     grid-template-columns: repeat(3, minmax(140px, 1fr));
@@ -896,4 +861,111 @@
   .heroStats {
     grid-template-columns: repeat(2, minmax(110px, 1fr));
   }
+}
+
+/* ── Location Banner ── */
+.locationBanner {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.65rem 1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(61, 220, 151, 0.3);
+  background: rgba(9, 24, 20, 0.45);
+  font-size: 0.85rem;
+  color: #b8e8d0;
+  flex-wrap: wrap;
+}
+
+.locationBanner strong {
+  color: #3ddc97;
+}
+
+.locationBannerIcon {
+  font-size: 1rem;
+}
+
+.locationBannerBtn {
+  margin-left: auto;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid rgba(61, 220, 151, 0.4);
+  border-radius: 7px;
+  background: rgba(61, 220, 151, 0.1);
+  color: #86e9b8;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.locationBannerBtn:hover {
+  background: rgba(61, 220, 151, 0.2);
+  border-color: rgba(61, 220, 151, 0.65);
+}
+
+/* ── City Strip Header ── */
+.cityStripHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 0.35rem;
+}
+
+.cityFilterInput {
+  background: rgba(10, 18, 30, 0.7);
+  border: 1px solid rgba(52, 78, 113, 0.55);
+  border-radius: 8px;
+  padding: 0.38rem 0.65rem;
+  color: #d0e4f3;
+  font-size: 0.78rem;
+  width: 160px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.cityFilterInput:focus {
+  border-color: rgba(48, 196, 255, 0.5);
+}
+
+.cityFilterInput::placeholder {
+  color: #6a8099;
+}
+
+.cityCount {
+  font-size: 0.72rem;
+  color: #6a8099;
+}
+
+/* ── Time Range Bar ── */
+.timeRangeBar {
+  display: flex;
+  gap: 0.3rem;
+  margin-bottom: 0.6rem;
+}
+
+.timeRangeBtn {
+  padding: 0.32rem 0.65rem;
+  border: 1px solid rgba(52, 78, 113, 0.5);
+  border-radius: 7px;
+  background: transparent;
+  color: #8ca6be;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.timeRangeBtn:hover {
+  color: #d0e4f3;
+  border-color: rgba(48, 196, 255, 0.4);
+}
+
+.timeRangeBtnActive {
+  color: #e5f5ff !important;
+  background: rgba(48, 196, 255, 0.12) !important;
+  border-color: rgba(48, 196, 255, 0.5) !important;
 }

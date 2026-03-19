@@ -2,6 +2,7 @@ package com.urbanpulse;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * UrbanPulse Notification Service
@@ -10,6 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * to the frontend dashboard via WebSocket.
  */
 @SpringBootApplication
+@EnableScheduling
 public class NotificationServiceApplication {
 
     public static void main(String[] args) {

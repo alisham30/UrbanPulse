@@ -76,7 +76,71 @@ export const apiClient = {
       console.error('Error checking service health:', error);
       throw error;
     }
-  }
+  },
+
+  getTimeSeries: async (city) => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/timeseries/${encodeURIComponent(city)}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching time series for ${city}:`, error);
+      return { series: [] };
+    }
+  },
+
+  getTopRiskCity: async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/top-risk`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching top-risk city:', error);
+      return null;
+    }
+  },
+
+  getMostImprovedCity: async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/most-improved`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching most-improved city:', error);
+      return null;
+    }
+  },
+
+  getHistoryWithRange: async (city, range = '6h') => {
+    try {
+      const response = await axios.get(
+        `${API_BASE_URL}/history/${encodeURIComponent(city)}/range?range=${encodeURIComponent(range)}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching ranged history for ${city}:`, error);
+      return { history: [] };
+    }
+  },
+
+  getCompareData: async (cities) => {
+    try {
+      const response = await axios.get(
+        `${API_BASE_URL}/compare?cities=${encodeURIComponent(cities.join(','))}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching comparison data:', error);
+      return { cities: [] };
+    }
+  },
+
+  getRankings: async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/rankings`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching rankings:', error);
+      return { rankings: [] };
+    }
+  },
 };
 
 /**

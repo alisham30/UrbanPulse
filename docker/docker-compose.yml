@@ -49,6 +49,30 @@ services:
     networks:
       - urbanpulse-network
 
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-urbanpulse_root}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-urbanpulse}
+      MYSQL_USER: ${MYSQL_USER:-urbanpulse}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-urbanpulse123}
+    ports:
+      - "3306:3306"
+    volumes:
+      - urbanpulse-mysql-data:/var/lib/mysql
+    networks:
+      - urbanpulse-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-urbanpulse_root}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  urbanpulse-mysql-data:
+    driver: local
+
 networks:
   urbanpulse-network:
     driver: bridge

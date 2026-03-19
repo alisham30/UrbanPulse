@@ -3,6 +3,23 @@ spring:
     name: notification-service
   profiles:
     active: dev
+  datasource:
+    url: ${MYSQL_URL:jdbc:mysql://localhost:3306/urbanpulse?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
+    username: ${MYSQL_USER:urbanpulse}
+    password: ${MYSQL_PASSWORD:urbanpulse123}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: ${DB_POOL_SIZE:10}
+      minimum-idle: 2
+      connection-timeout: 20000
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
   kafka:
     bootstrap-servers: localhost:9092
     consumer:
@@ -15,7 +32,7 @@ spring:
         spring.json.use.type.headers: false
         spring.json.value.default.type: com.urbanpulse.model.CityMetrics
     topic:
-      processed-city-data: processed-city-data
+      processed-city-data: city-intelligence-events
 
 server:
   port: 8083
@@ -35,3 +52,8 @@ urbanpulse:
     max-city-alerts: 20
     # Max cities to track
     max-cities: 50
+  retention:
+    # Days to keep historical metrics in MySQL
+    days: ${RETENTION_DAYS:7}
+    # Cleanup interval in milliseconds (default 6 hours)
+    cleanup-interval-ms: ${RETENTION_CLEANUP_MS:21600000}

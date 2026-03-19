@@ -26,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class KafkaConsumerService {
 
-    private static final long ALERT_COOLDOWN_MS = 5 * 60 * 1000L;
+    private static final long ALERT_COOLDOWN_MS = 10 * 60 * 1000L;
 
     @Autowired
     private MetricsStoreService metricsStoreService;
@@ -75,6 +75,7 @@ public class KafkaConsumerService {
                         .cityHealthScore(metrics.getCityHealthScore())
                         .primaryDriver(metrics.getPrimaryDriver())
                         .alertType(decision.alertType())
+                        .alertState(mapAlertState(decision.alertType()))
                         .build();
 
                 alertService.addAlert(alert);
@@ -112,10 +113,15 @@ public class KafkaConsumerService {
                                                 String currentRisk,
                                                 String previousRisk,
                                                 long now) {
-        boolean currentlyElevated = riskRank(currentRisk) >= 2;
-        boolean previouslyElevated = riskRank(previousRisk) >= 2;
-        boolean escalated = riskRank(currentRisk) > riskRank(previousRisk);
-        boolean recovered = "NORMAL".equals(currentRisk) && previouslyElevated;
+        // Spec alert conditions
+        int aqi = metrics.getAqi() != null ? metrics.getAqi() : 0;
+        double deviationPct = metrics.getAqiDeviationPercent() != null ? metrics.getAqiDeviationPercent() : 0.0;
+        boolean isAnomaly = Boolean.TRUE.equals(metrics.getAnomaly());
+
+        boolean isSevere = aqi > 200;
+        boolean isHighRisk = aqi > 150 && deviationPct > 20;
+        boolean previouslyHighOrAbove = riskRank(previousRisk) >= 3; // HIGH_RISK or SEVERE
+        boolean recovered = aqi < 120 && previouslyHighOrAbove;
 
         String fingerprint = createFingerprint(metrics);
         String lastFingerprint = lastAlertFingerprint.get(cityKey);
@@ -129,12 +135,17 @@ public class KafkaConsumerService {
             return new AlertDecision(true, "RECOVERY");
         }
 
-        if (escalated && currentlyElevated) {
+        if (isAnomaly && (!isDuplicateCondition || cooldownExpired)) {
+            updateAlertState(cityKey, now, fingerprint);
+            return new AlertDecision(true, "ANOMALY");
+        }
+
+        if (isSevere && (!isDuplicateCondition || cooldownExpired)) {
             updateAlertState(cityKey, now, fingerprint);
             return new AlertDecision(true, "ESCALATION");
         }
 
-        if (currentlyElevated && (!isDuplicateCondition || cooldownExpired)) {
+        if (isHighRisk && (!isDuplicateCondition || cooldownExpired)) {
             updateAlertState(cityKey, now, fingerprint);
             return new AlertDecision(true, "UPDATE");
         }
@@ -192,5 +203,13 @@ public class KafkaConsumerService {
     }
 
     private record AlertDecision(boolean shouldAlert, String alertType) {
+    }
+
+    private String mapAlertState(String alertType) {
+        return switch (alertType != null ? alertType : "NONE") {
+            case "ESCALATION" -> "ESCALATED";
+            case "RECOVERY" -> "RESOLVED";
+            default -> "NEW";
+        };
     }
 }

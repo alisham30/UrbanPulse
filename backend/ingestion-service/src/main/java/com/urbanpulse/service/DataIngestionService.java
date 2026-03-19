@@ -59,19 +59,26 @@ public class DataIngestionService {
             // Merge into unified payload
             UnifiedPayload payload = mergeData(cityName, weather, pollData);
 
-            // Enrich with OpenAQ secondary validation (non-blocking: any failure = UNAVAILABLE)
+            // Enrich with OpenAQ secondary validation (non-blocking: any failure = signal-based fallback)
             try {
                 OpenAqClient.OpenAqMeasurement openAq = openAqClient.getLatestMeasurements(latitude, longitude);
                 payload.setOpenAqPm25(openAq != null ? openAq.pm25() : null);
                 payload.setOpenAqPm10(openAq != null ? openAq.pm10() : null);
                 payload.setValidationStatus(
                         openAqClient.computeValidationStatus(payload.getPm25(), payload.getPm10(), openAq));
-                payload.setDataConfidenceScore(
-                        openAqClient.computeConfidenceScore(payload.getPm25(), payload.getPm10(), openAq));
+
+                Double crossValidatedConfidence = openAqClient.computeConfidenceScore(
+                        payload.getPm25(), payload.getPm10(), openAq);
+                if (crossValidatedConfidence != null) {
+                    payload.setDataConfidenceScore(crossValidatedConfidence);
+                } else {
+                    // No OpenAQ data — compute signal-based confidence from data quality
+                    payload.setDataConfidenceScore(computeSignalConfidence(payload));
+                }
             } catch (Exception e) {
                 log.debug("OpenAQ enrichment skipped for {}: {}", cityName, e.getMessage());
                 payload.setValidationStatus("UNAVAILABLE");
-                payload.setDataConfidenceScore(0.6);
+                payload.setDataConfidenceScore(computeSignalConfidence(payload));
             }
 
             log.debug("Successfully ingested data for {}: AQI={}, PM2.5={}, Temp={}", 
@@ -162,6 +169,63 @@ public class DataIngestionService {
                 .source("openweather")
                 .apiVersion("2.5")
                 .build();
+    }
+
+    /**
+     * Compute a multi-signal confidence score when OpenAQ cross-validation is unavailable.
+     * Uses data completeness and plausibility signals instead of a flat default.
+     *
+     * Signals:
+     * - Data completeness: how many fields are non-null (AQI, PM2.5, PM10, temp, humidity, pressure, wind)
+     * - AQI plausibility: AQI in expected range (0-500)
+     * - PM ratio plausibility: PM2.5 ≤ PM10 (physically expected)
+     * - Temperature plausibility: -40 to 55°C
+     */
+    private double computeSignalConfidence(UnifiedPayload p) {
+        double score = 0.0;
+        int signals = 0;
+
+        // Signal 1: Data completeness (0.0 - 1.0)
+        int fieldsPresent = 0;
+        int totalFields = 7;
+        if (p.getAqi() != null) fieldsPresent++;
+        if (p.getPm25() != null) fieldsPresent++;
+        if (p.getPm10() != null) fieldsPresent++;
+        if (p.getTemperature() != null) fieldsPresent++;
+        if (p.getHumidity() != null) fieldsPresent++;
+        if (p.getPressure() != null) fieldsPresent++;
+        if (p.getWindSpeed() != null) fieldsPresent++;
+        score += (double) fieldsPresent / totalFields;
+        signals++;
+
+        // Signal 2: AQI plausibility
+        if (p.getAqi() != null) {
+            score += (p.getAqi() >= 0 && p.getAqi() <= 500) ? 1.0 : 0.3;
+            signals++;
+        }
+
+        // Signal 3: PM ratio plausibility (PM2.5 should generally be ≤ PM10)
+        if (p.getPm25() != null && p.getPm10() != null && p.getPm10() > 0) {
+            score += (p.getPm25() <= p.getPm10() * 1.1) ? 1.0 : 0.5;
+            signals++;
+        }
+
+        // Signal 4: Temperature plausibility
+        if (p.getTemperature() != null) {
+            score += (p.getTemperature() >= -40 && p.getTemperature() <= 55) ? 1.0 : 0.3;
+            signals++;
+        }
+
+        // Signal 5: Humidity plausibility (0-100%)
+        if (p.getHumidity() != null) {
+            score += (p.getHumidity() >= 0 && p.getHumidity() <= 100) ? 1.0 : 0.4;
+            signals++;
+        }
+
+        double confidence = signals > 0 ? score / signals : 0.5;
+        // Scale to 0.45-0.85 range (can't reach 0.9+ without cross-validation)
+        confidence = 0.45 + (confidence * 0.40);
+        return Math.round(confidence * 100.0) / 100.0;
     }
 
 }

@@ -24,8 +24,18 @@ public class KafkaProducerService {
     @Value("${spring.kafka.topic.raw-city-data}")
     private String topic;
 
+    @Value("${spring.kafka.topic.weather-raw-events}")
+    private String weatherTopic;
+
+    @Value("${spring.kafka.topic.pollution-raw-events}")
+    private String pollutionTopic;
+
+    @Value("${spring.kafka.topic.openaq-validation-events}")
+    private String openaqTopic;
+
     /**
      * Publish unified environmental data to Kafka topic.
+     * Also fans out to granular per-source topics for multi-stream Spark consumption.
      */
     public void publishData(UnifiedPayload payload) {
         if (payload == null) {
@@ -57,11 +67,34 @@ public class KafkaProducerService {
                         return null;
                     });
 
-            // For immediate feedback, we could block here, but async is better
-            // sendResult.join(); 
+            // Fan out to granular topics for multi-stream Spark consumption
+            sendToTopic(payload, key, weatherTopic);
+            sendToTopic(payload, key, pollutionTopic);
+
+            // Publish OpenAQ validation event only when data is available
+            if (payload.getValidationStatus() != null && !"UNAVAILABLE".equals(payload.getValidationStatus())) {
+                sendToTopic(payload, key, openaqTopic);
+            }
 
         } catch (Exception e) {
             log.error("Error publishing payload to Kafka", e);
+        }
+    }
+
+    private void sendToTopic(UnifiedPayload payload, String key, String targetTopic) {
+        try {
+            Message<UnifiedPayload> msg = MessageBuilder
+                    .withPayload(payload)
+                    .setHeader(KafkaHeaders.TOPIC, targetTopic)
+                    .setHeader(KafkaHeaders.KEY, key)
+                    .build();
+            kafkaTemplate.send(msg)
+                    .exceptionally(ex -> {
+                        log.error("Failed to publish to {}", targetTopic, ex);
+                        return null;
+                    });
+        } catch (Exception e) {
+            log.error("Error sending to topic {}", targetTopic, e);
         }
     }
 

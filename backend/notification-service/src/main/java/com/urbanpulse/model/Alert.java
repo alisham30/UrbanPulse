@@ -42,4 +42,10 @@ public class Alert {
     @JsonProperty("alertType")
     private String alertType;
 
+    /**
+     * Lifecycle state of this alert: NEW, ESCALATED, or RESOLVED.
+     */
+    @JsonProperty("alertState")
+    private String alertState;
+
 }

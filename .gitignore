@@ -78,6 +78,10 @@ derby.log
 # ===== Hadoop (local winutils) =====
 analytics/hadoop/
 
+# ===== Large binaries =====
+*.tgz
+*.tar.gz
+
 # ===== Docker =====
 .docker/
 

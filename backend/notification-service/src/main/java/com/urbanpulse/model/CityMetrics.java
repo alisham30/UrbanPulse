@@ -99,4 +99,17 @@ public class CityMetrics implements Serializable {
     @JsonProperty("openAqPm10")
     private Double openAqPm10;
 
+    /**
+     * Human-readable, actionable recommendation computed by the Spark intelligence engine.
+     */
+    @JsonProperty("recommendation")
+    private String recommendation;
+
+    /**
+     * Percentage change in AQI vs 10 readings ago. Null if insufficient history.
+     * Formula: ((currentAQI - AQI_10_readings_ago) / AQI_10_readings_ago) * 100
+     */
+    @JsonProperty("aqiTimeChangePct")
+    private Double aqiTimeChangePct;
+
 }

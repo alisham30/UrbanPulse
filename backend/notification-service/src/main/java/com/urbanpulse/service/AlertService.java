@@ -1,17 +1,19 @@
 package com.urbanpulse.service;
 
+import com.urbanpulse.entity.AlertEntity;
 import com.urbanpulse.model.Alert;
+import com.urbanpulse.repository.AlertRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
- * Service for managing alert history.
- * Maintains recent alerts in memory (bounded queue).
+ * Hybrid alert service: in-memory bounded queue + MySQL persistence.
  */
 @Slf4j
 @Service
@@ -26,9 +28,12 @@ public class AlertService {
     private final ConcurrentLinkedQueue<Alert> alerts = new ConcurrentLinkedQueue<>();
     private final ConcurrentHashMap<String, Deque<Alert>> alertsByCity = new ConcurrentHashMap<>();
 
-    /**
-     * Add a new alert.
-     */
+    private final AlertRepository alertRepository;
+
+    public AlertService(AlertRepository alertRepository) {
+        this.alertRepository = alertRepository;
+    }
+
     public void addAlert(Alert alert) {
         if (alert == null) {
             log.warn("Attempted to add null alert");
@@ -38,26 +43,48 @@ public class AlertService {
         alerts.offer(alert);
         addCityAlert(alert);
 
-        // Maintain size limit
         while (alerts.size() > maxAlerts) {
             alerts.poll();
         }
 
+        persistAlert(alert);
         log.debug("Alert added for {}: {}", alert.getCity(), alert.getRiskLevel());
     }
 
-    /**
-     * Get recent alerts (most recent first).
-     */
+    private void persistAlert(Alert a) {
+        try {
+            Instant recordedAt;
+            try {
+                recordedAt = a.getTimestamp() != null ? Instant.parse(a.getTimestamp()) : Instant.now();
+            } catch (Exception e) {
+                recordedAt = Instant.now();
+            }
+
+            AlertEntity entity = AlertEntity.builder()
+                    .alertId(a.getId())
+                    .city(a.getCity() != null ? a.getCity().toLowerCase() : "unknown")
+                    .recordedAt(recordedAt)
+                    .riskLevel(a.getRiskLevel())
+                    .message(a.getMessage())
+                    .aqi(a.getAqi())
+                    .cityHealthScore(a.getCityHealthScore())
+                    .primaryDriver(a.getPrimaryDriver())
+                    .alertType(a.getAlertType())
+                    .alertState(a.getAlertState())
+                    .build();
+
+            alertRepository.save(entity);
+        } catch (Exception e) {
+            log.warn("Failed to persist alert to MySQL: {}", e.getMessage());
+        }
+    }
+
     public List<Alert> getRecentAlerts(int limit) {
         List<Alert> result = new ArrayList<>(alerts);
         Collections.reverse(result);
         return result.stream().limit(limit).toList();
     }
 
-    /**
-     * Get all alerts for a specific city.
-     */
     public List<Alert> getAlertsForCity(String city) {
         if (city == null) {
             return Collections.emptyList();
@@ -72,25 +99,16 @@ public class AlertService {
         return cityAlerts;
     }
 
-    /**
-     * Get all alerts.
-     */
     public List<Alert> getAllAlerts() {
         return new ArrayList<>(alerts);
     }
 
-    /**
-     * Clear all alerts (useful for testing).
-     */
     public void clearAll() {
         alerts.clear();
         alertsByCity.clear();
-        log.info("Cleared all alerts");
+        log.info("Cleared all in-memory alerts");
     }
 
-    /**
-     * Get alert count.
-     */
     public int getAlertCount() {
         return alerts.size();
     }
@@ -107,5 +125,4 @@ public class AlertService {
             }
         }
     }
-
 }
