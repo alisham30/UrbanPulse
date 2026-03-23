@@ -29,7 +29,7 @@ and visualizing everything on a polished interactive dashboard with maps, compar
 
 ## ✨ Highlights
 
-- 📡 **Live ingestion** from OpenWeather + OpenAQ APIs, polling 8 Indian cities every 30 seconds
+- 📡 **Live ingestion** from OpenWeather + OpenMeteo APIs, polling 8 Indian cities every 30 seconds
 - 📜 **Historical baselines** computed from 3 years of Kaggle air quality data (2015–2020)
 - ⚡ **Kafka event streaming** — fully decoupled microservices across 4 topics (`raw-city-data`, `city-intelligence-events`, `city-alert-events`, `cross-city-intelligence`)
 - 🔥 **Apache Spark Structured Streaming** — enriches raw data, computes City Health Scores (0–100), and runs cross-city intelligence analytics
