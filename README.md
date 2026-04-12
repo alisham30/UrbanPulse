@@ -1,6 +1,6 @@
 ﻿<div align="center">
 
-<h1>🏙️ UrbanPulse</h1>
+<h1>🏙️ UrbanPulse.</h1>
 
 <p><strong>Real-Time City Intelligence & Environmental Analytics Platform</strong></p>
 
